@@ -7,9 +7,9 @@ from company_v2.core.settings import Settings
 from company_v2.core.store import Store
 from company_v2.core.risk import RiskPolicy
 from company_v2.core.orchestrator import Orchestrator
-from company_v2.adapters.http_bridge import HttpJsonBridge
 from company_v2.adapters.autopilot import AutopilotAdapter
 from company_v2.adapters.nexus import NexusAdapter
+from company_v2.adapters.shttps_factory import build_company_clients
 from company_v2.connectors.github_issues import GitHubIssuesConnector
 from company_v2.connectors.autopilot_scout import AutopilotRevenueScout
 
@@ -17,20 +17,13 @@ from company_v2.connectors.autopilot_scout import AutopilotRevenueScout
 def build() -> tuple[Store, Orchestrator, list]:
     s = Settings()
     store = Store(s.db_path)
-    autopilot = (
-        AutopilotAdapter(
-            HttpJsonBridge(s.autopilot_url, s.autopilot_token),
-            s.autopilot_task_path,
-            s.autopilot_status_path,
-            s.autopilot_execute_path,
-            s.autopilot_approve_path,
-        )
-        if s.autopilot_enabled else None
-    )
-    nexus = (
-        NexusAdapter(HttpJsonBridge(s.nexus_url, s.nexus_token), s.nexus_search_path, s.nexus_upsert_path)
-        if s.nexus_enabled else None
-    )
+    autopilot = nexus = None
+    if s.autopilot_enabled or s.nexus_enabled:
+        autopilot_client, nexus_client = build_company_clients(s)
+        if s.autopilot_enabled:
+            autopilot = AutopilotAdapter(autopilot_client)
+        if s.nexus_enabled:
+            nexus = NexusAdapter(nexus_client)
     orch = Orchestrator(
         store=store,
         risk=RiskPolicy(s.mode, s.max_external_spend_usd, s.max_daily_loss_usd, s.max_financial_action_usd),
