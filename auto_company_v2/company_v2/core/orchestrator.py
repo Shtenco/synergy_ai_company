@@ -27,12 +27,7 @@ class Orchestrator:
             self.store.event("opportunity.ingested", {"score": score, **o.to_dict()}, o.id)
             if self.nexus:
                 try:
-                    self.nexus.upsert(
-                        o.id,
-                        json.dumps({"score": score, **o.to_dict()}, ensure_ascii=False),
-                        "opportunities",
-                        {"score": score},
-                    )
+                    self.nexus.upsert(o.id, json.dumps({"score": score, **o.to_dict()}, ensure_ascii=False), "opportunities", {"score": score})
                 except Exception as e:
                     self.store.event("nexus.write_failed", {"stage": "opportunity", "error": str(e)}, o.id)
             ranked.append((o, score))
@@ -57,6 +52,33 @@ class Orchestrator:
         self.store.event("action.proposed", action.to_dict(), action.id)
         return action
 
+    def propose_go_to_market_bundle(self, o: Opportunity, validation: dict) -> list[ProposedAction]:
+        """Prepare a zero-side-effect business package after evidence validation."""
+        if validation.get("next_action") != "prepare_bounded_proposal":
+            return []
+        value = o.description or f"Deliver {o.title}"
+        specs = [
+            ("prepare_sales_offer", "sales.compose_offer", {"product": o.title, "value": value}),
+            ("prepare_smm_plan", "smm.content_plan", {"product": o.title, "audience": "validated buyer segment", "objective": "qualified leads", "days": 14}),
+            ("prepare_video_storyboard", "video.storyboard", {"topic": o.title, "platform": "reels", "duration_sec": 30}),
+            ("analyze_unit_economics", "cfo.analyze_budget", {"revenue_usd": o.expected_revenue_usd, "costs": {"estimated_delivery": o.estimated_cost_usd}, "budget_usd": o.estimated_cost_usd}),
+        ]
+        actions = []
+        for kind, capability, payload in specs:
+            action = ProposedAction(
+                kind=kind,
+                description=f"{kind} for: {o.title}",
+                capability=capability,
+                risk_class=RiskClass.READ_ONLY,
+                opportunity_id=o.id,
+                payload=payload,
+            )
+            self.risk.apply(action)
+            self.store.save_action(action.to_dict())
+            self.store.event("action.proposed", action.to_dict(), action.id)
+            actions.append(action)
+        return actions
+
     def dispatch(self, action: ProposedAction) -> dict:
         if self.store.is_paused():
             raise PermissionError("company is paused")
@@ -79,7 +101,6 @@ class Orchestrator:
         approved_by = None
         if self.store.approval_decision(action.id) == "approved":
             approved_by = f"synergy_ai_company:{action.id}"
-
         result = self.autopilot.dispatch(payload, approved_by=approved_by)
         action.state = ActionState.DISPATCHED
         self.store.save_action(action.to_dict())
