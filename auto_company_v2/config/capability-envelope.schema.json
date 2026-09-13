@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Synergy Capability Envelope v1",
+  "type": "object",
+  "required": [
+    "protocol",
+    "source",
+    "action_id",
+    "capability",
+    "description",
+    "payload",
+    "constraints"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "synergy.capability.v1"
+    },
+    "source": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "capability": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "object",
+      "required": [
+        "risk_class",
+        "estimated_spend_usd",
+        "max_loss_usd"
+      ]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+name: Auto Company 2.0 CI
+on:
+  push:
+    paths: ["auto_company_v2/**", ".github/workflows/auto-company-v2-ci.yml"]
+  pull_request:
+    paths: ["auto_company_v2/**", ".github/workflows/auto-company-v2-ci.yml"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: auto_company_v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e '.[dev]'
+      - run: pytest

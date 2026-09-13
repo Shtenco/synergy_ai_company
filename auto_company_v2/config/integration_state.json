@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-09-13",
+  "source": "GitHub connected repository main branches",
+  "repositories": {
+    "synergy_ai_company": {
+      "status": "bootstrap",
+      "main": "README.md only before this branch",
+      "role": "business control plane"
+    },
+    "agi_autopilot": {
+      "status": "contract_only",
+      "main": "README.md only",
+      "verified_runtime": false,
+      "role": "target execution engine",
+      "activation": "add reviewed sidecar/API then set SYNERGY_AUTOPILOT_ENABLED=1"
+    },
+    "agi_nexus": {
+      "status": "architecture_and_artifacts",
+      "verified_runtime": false,
+      "role": "intelligence/inference + semantic/episodic memory proposals",
+      "authority_exclusions": [
+        "financial authorization",
+        "ledger mutation",
+        "payment authority",
+        "blockchain consensus",
+        "production deployment",
+        "scientific truth"
+      ],
+      "activation": "expose versioned inference/memory API or reviewed sidecar then set SYNERGY_NEXUS_ENABLED=1"
+    },
+    "synergy_system": {
+      "status": "canonical_architecture_root",
+      "rule": "federation, one authority per fact, evidence precedes authority"
+    },
+    "synergy_financial_os": {
+      "status": "canonical_accounting",
+      "rule": "external evidence + accounting recognition required; operational company store is not accounting authority"
+    }
+  }
+}

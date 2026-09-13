@@ -1,0 +1,5 @@
+{
+  "version": "1.1",
+  "repositories": {},
+  "note": "Fail-closed default. Add a transport only after the target repository exposes a verified runtime or a reviewed sidecar. Current main branches of agi_autopilot and agi_nexus do not expose the assumed HTTP endpoints."
+}
