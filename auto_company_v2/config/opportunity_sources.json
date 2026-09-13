@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "policy": "public_search_or_official_api_only",
+  "sources": [
+    {"name": "GitHub issues and bounties", "priority": 9, "access": "public/API", "signals": ["bounty", "paid", "help wanted", "contract"]},
+    {"name": "MoltJobs", "priority": 10, "access": "public/official interface", "signals": ["buyer request", "budget", "AI-to-AI task"]},
+    {"name": "Dealwork.ai", "priority": 10, "access": "public/official interface", "signals": ["buyer-posted task", "escrow", "budget"]},
+    {"name": "Upwork", "priority": 8, "access": "public search/official API where available", "signals": ["payment verified", "budget", "recent"]},
+    {"name": "Freelancer", "priority": 8, "access": "public search/official API where available", "signals": ["project", "budget", "open"]},
+    {"name": "Kwork and FL.ru", "priority": 7, "access": "public search/official interface", "signals": ["buyer request", "budget"]},
+    {"name": "hh.ru and Habr Career", "priority": 6, "access": "public/official API where available", "signals": ["contract", "remote", "AI", "automation"]},
+    {"name": "public Telegram/VK/social posts", "priority": 6, "access": "public or connected official APIs only", "signals": ["ищу исполнителя", "бюджет", "нейросеть", "автоматизация"]},
+    {"name": "Reddit and Hacker News", "priority": 5, "access": "public/API", "signals": ["hiring", "paid help", "need contractor"]},
+    {"name": "direct product demand", "priority": 7, "access": "public research", "signals": ["repeated pain", "existing spend", "urgent workaround"]}
+  ]
+}

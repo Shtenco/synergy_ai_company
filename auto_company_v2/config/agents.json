@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "agents": [
+    {"id":"ceo","purpose":"Choose portfolio priorities from verified evidence and expected value.","capabilities":["portfolio.read","strategy.plan"],"can_spend":false},
+    {"id":"revenue_scout","purpose":"Discover buyer-posted demand and rank opportunities.","capabilities":["research.web","opportunity.ingest"],"can_spend":false},
+    {"id":"sales","purpose":"Prepare proposals, qualification and follow-up. Sending is gated.","capabilities":["sales.prepare","external.message"],"can_spend":false},
+    {"id":"product","purpose":"Turn validated demand into smallest paid deliverable.","capabilities":["product.spec","code.request"],"can_spend":false},
+    {"id":"engineer","purpose":"Build and test deliverables through AI Autopilot/ai_coder.","capabilities":["code.write","test.run"],"can_spend":false},
+    {"id":"qa","purpose":"Verify acceptance criteria and regression risk.","capabilities":["test.run","artifact.read"],"can_spend":false},
+    {"id":"devops","purpose":"Prepare deploys; production release is gated.","capabilities":["deploy.prepare","external.deploy"],"can_spend":false},
+    {"id":"cfo","purpose":"Analyze operational revenue/cost evidence, margins and runway; canonical accounting remains in synergy_financial_os.","capabilities":["evidence.read","finance.analyze"],"can_spend":false},
+    {"id":"risk","purpose":"Enforce hard limits before side effects.","capabilities":["risk.evaluate","action.block"],"can_spend":false},
+    {"id":"security","purpose":"Review permissions, secrets and prompt-injection exposure.","capabilities":["security.review"],"can_spend":false},
+    {"id":"nexus_curator","purpose":"Promote durable facts to Nexus while preserving audit lineage.","capabilities":["memory.search","memory.upsert"],"can_spend":false},
+    {"id":"accountant","purpose":"Reconcile predicted vs externally evidenced revenue/cost and prepare records for canonical Financial OS recognition.","capabilities":["evidence.read","ledger.reconcile"],"can_spend":false},
+    {"id":"customer_success","purpose":"Track delivery, acceptance, retention and upsell evidence.","capabilities":["customer.read","sales.prepare"],"can_spend":false},
+    {"id":"portfolio_manager","purpose":"Allocate engineering attention, never money, across 51 repos.","capabilities":["registry.read","portfolio.plan"],"can_spend":false}
+  ]
+}

@@ -1,0 +1,19 @@
+.PHONY: ac2-install ac2-test ac2-api ac2-worker ac2-telegram ac2-doctor
+ac2-install:
+	python -m pip install -e '.[dev]'
+
+ac2-test:
+	pytest
+
+ac2-api:
+	python scripts/run_api.py
+
+ac2-worker:
+	python -m company_v2.worker
+
+ac2-telegram:
+	python -m company_v2.telegram.bot
+
+ac2-doctor:
+	python -m company_v2.cli init
+	python -m company_v2.cli repos
