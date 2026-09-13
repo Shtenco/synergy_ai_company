@@ -42,6 +42,8 @@ class Settings:
     autopilot_url: str = os.getenv("SYNERGY_AUTOPILOT_URL", "http://127.0.0.1:8120")
     autopilot_task_path: str = os.getenv("SYNERGY_AUTOPILOT_TASK_PATH", "/v1/tasks")
     autopilot_status_path: str = os.getenv("SYNERGY_AUTOPILOT_STATUS_PATH", "/v1/tasks/{task_id}")
+    autopilot_execute_path: str = os.getenv("SYNERGY_AUTOPILOT_EXECUTE_PATH", "/v1/tasks/{task_id}/execute")
+    autopilot_approve_path: str = os.getenv("SYNERGY_AUTOPILOT_APPROVE_PATH", "/v1/tasks/{task_id}/approve")
     autopilot_token: str = os.getenv("SYNERGY_AUTOPILOT_TOKEN", "")
 
     nexus_enabled: bool = _bool("SYNERGY_NEXUS_ENABLED", False)

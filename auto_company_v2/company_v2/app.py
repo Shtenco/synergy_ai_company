@@ -27,6 +27,8 @@ autopilot = (
         HttpJsonBridge(settings.autopilot_url, settings.autopilot_token),
         settings.autopilot_task_path,
         settings.autopilot_status_path,
+        settings.autopilot_execute_path,
+        settings.autopilot_approve_path,
     )
     if settings.autopilot_enabled else None
 )
@@ -38,7 +40,13 @@ nexus = (
     )
     if settings.nexus_enabled else None
 )
-orch = Orchestrator(store, risk, autopilot, settings.ai_daily_budget_usd)
+orch = Orchestrator(
+    store=store,
+    risk=risk,
+    autopilot=autopilot,
+    ai_daily_budget_usd=settings.ai_daily_budget_usd,
+    nexus=nexus,
+)
 app = FastAPI(title="Synergy AI Company 2.0", version="2.0.0a1")
 
 
@@ -202,5 +210,5 @@ def usage(body: UsageIn, authorization: str | None = Header(default=None)):
 def nexus_search(body: dict, authorization: str | None = Header(default=None)):
     guard(authorization)
     if nexus is None:
-        raise HTTPException(503, "NEXUS runtime is not enabled; current agi_nexus main exposes architecture/artifacts but no verified HTTP service")
+        raise HTTPException(503, "NEXUS runtime is not enabled")
     return nexus.search(str(body.get("query", "")), body.get("namespaces"), int(body.get("limit", 10)))
