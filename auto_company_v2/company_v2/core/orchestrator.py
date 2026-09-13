@@ -65,14 +65,7 @@ class Orchestrator:
         ]
         actions = []
         for kind, capability, payload in specs:
-            action = ProposedAction(
-                kind=kind,
-                description=f"{kind} for: {o.title}",
-                capability=capability,
-                risk_class=RiskClass.READ_ONLY,
-                opportunity_id=o.id,
-                payload=payload,
-            )
+            action = ProposedAction(kind=kind, description=f"{kind} for: {o.title}", capability=capability, risk_class=RiskClass.READ_ONLY, opportunity_id=o.id, payload=payload)
             self.risk.apply(action)
             self.store.save_action(action.to_dict())
             self.store.event("action.proposed", action.to_dict(), action.id)
@@ -89,7 +82,6 @@ class Orchestrator:
             raise PermissionError(f"action {action.id} is {action.state.value}, not approved")
         if not self.autopilot:
             raise RuntimeError("AI Autopilot adapter is not configured")
-
         payload = action.to_dict()
         if self.nexus:
             try:
@@ -97,7 +89,6 @@ class Orchestrator:
                 payload.setdefault("payload", {})["nexus_context"] = context.get("items", [])
             except Exception as e:
                 self.store.event("nexus.search_failed", {"error": str(e)}, action.id)
-
         approved_by = None
         if self.store.approval_decision(action.id) == "approved":
             approved_by = f"synergy_ai_company:{action.id}"
@@ -105,15 +96,9 @@ class Orchestrator:
         action.state = ActionState.DISPATCHED
         self.store.save_action(action.to_dict())
         self.store.event("action.dispatched", {"result": result}, action.id)
-
         if self.nexus:
             try:
-                self.nexus.upsert(
-                    action.id,
-                    json.dumps({"action": payload, "autopilot_result": result}, ensure_ascii=False, default=str),
-                    "company_actions",
-                    {"opportunity_id": action.opportunity_id, "status": result.get("status")},
-                )
+                self.nexus.upsert(action.id, json.dumps({"action": payload, "autopilot_result": result}, ensure_ascii=False, default=str), "company_actions", {"opportunity_id": action.opportunity_id, "status": result.get("status")})
             except Exception as e:
                 self.store.event("nexus.write_failed", {"stage": "action_result", "error": str(e)}, action.id)
         return result
@@ -126,10 +111,13 @@ class Orchestrator:
             max_loss_usd=float(d.get("max_loss_usd", 0)), opportunity_id=d.get("opportunity_id"),
             payload=d.get("payload", {}), id=d["id"], state=ActionState(d["state"]), created_at=d.get("created_at", ""),
         )
-        if action.risk_class in {RiskClass.FINANCIAL, RiskClass.TRADING, RiskClass.BLOCKCHAIN}:
-            hard = self.risk.evaluate(action, self.store.loss_today_usd())
-            if self.risk.mode != "live" or (not hard.approval_required and not hard.allowed):
-                raise PermissionError(hard.reason)
+        decision = self.risk.evaluate(action, self.store.loss_today_usd())
+        if not decision.allowed and not decision.approval_required:
+            raise PermissionError(decision.reason)
+        if decision.approval_required:
             if self.store.approval_decision(action.id) != "approved":
                 raise PermissionError("explicit human approval missing")
+            action.state = ActionState.APPROVED
+        elif decision.allowed:
+            action.state = ActionState.APPROVED
         return self.dispatch(action)
