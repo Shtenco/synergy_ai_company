@@ -1,3 +1,9 @@
+<!-- SCIENTIFIC-V3-2026:START -->
+<img src="assets/readme/scientific-architecture-v3.svg" width="100%" alt="AI-NATIVE COMPANY / AGENT GOVERNANCE"/>
+
+[Научно-техническое досье V3](docs/SCIENTIFIC_DOSSIER_V3_2026.md) — исследовательские идеи, формализация и эксперименты. Исходный README сохранён полностью.
+<!-- SCIENTIFIC-V3-2026:END -->
+
 #  SYNERGY AI Company
 
 > **Домен:** Intelligence / Agentic Organization  
